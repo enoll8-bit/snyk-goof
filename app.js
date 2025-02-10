@@ -24,6 +24,7 @@ var errorHandler = require('errorhandler');
 var optional = require('optional');
 var marked = require('marked');
 var fileUpload = require('express-fileupload');
+var session = require('express-session')
 var dust = require('dustjs-linkedin');
 var dustHelpers = require('dustjs-helpers');
 var cons = require('consolidate');
@@ -61,6 +62,11 @@ app.put('/chat', routes.chat.add);
 app.delete('/chat', routes.chat.delete);
 // Static
 app.use(st({ path: './public', url: '/public' }));
+app.use(session({
+  secret: 'keyboard cat',
+  name: 'connect.sid',
+  cookie: { path: '/' }
+}))
 
 // Add the option to output (sanitized!) markdown
 marked.setOptions({ sanitize: true });
@@ -74,6 +80,6 @@ if (app.get('env') == 'development') {
 var token = 'SECRET_TOKEN_f8ed84e8f41e4146403dd4a6bbcea5e418d23a9';
 console.log('token: ' + token);
 
-http.createServer(app).listen(app.get('port'), function () {
+http.createServer(app).listen(app.get('app-port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
